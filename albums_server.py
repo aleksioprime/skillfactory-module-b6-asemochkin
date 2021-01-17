@@ -22,8 +22,8 @@ def view_albums(artist):
 
 # Для тестирования функции добавления альбома в БД после запуска скрипта введие в командой строке (при наличии httpie):
 # http -f POST http://localhost:8080/albums year="2010" artist="New Artist" genre="Rock" album="Super"
-# http -f POST http://localhost:8080/albums year="2021" artist="Sun and Moon" genre="Pop" album="Super"
-# http -f POST http://localhost:8080/albums year="1800" artist="Green Weeks" genre="Rock" album="Red"
+# http -f POST http://localhost:8080/albums year="2021" artist="Sun and Moon" genre="Pop" album="Queen"
+# http -f POST http://localhost:8080/albums year="1990год" artist="Green Weeks" genre="Rock" album="Red"
 @route("/albums", method="POST")
 def add_album():
     """ Добавляет исполнителя и его альбом с годом выпуска и жанром в БД с помощью POST-запроса"""
@@ -39,6 +39,8 @@ def add_album():
     except ValueError:
         return HTTPError(400, "Некорректные параметры года")
     else:
+        if albums_data["artist"] or albums_data["genre"] or albums_data["album"]:
+            return HTTPError(400, "Поля не должны быть пустыми")
         if album.album_in_base(albums_data["album"]):
             message = "Альбом {} уже существует в базе".format(albums_data["album"])
             result = HTTPError(409, message)
